@@ -7,6 +7,8 @@ exports.signup = async (req, res) => {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const user = new User({
       username: req.body.email,
+      fname: req.body.fname,
+      lname: req.body.lname,
       password: hashedPassword
     });
     await user.save();
@@ -29,7 +31,8 @@ exports.login = async (req, res) => {
       return res.status(401).json({ message: 'Invalid password' });
     }
     const token = jwt.sign({ userId: user._id }, 'your_secret_key', { expiresIn: '1h' });
-    res.status(200).json({ token });
+    console.log(user);
+    res.status(200).json({ token: token,  fname:user.fname, lname:user.lname});
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'An error occurred while logging in' });
